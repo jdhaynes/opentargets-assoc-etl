@@ -70,7 +70,7 @@ docker volume create opentargets-assoc-etl-vol
 Then run the pipeline by starting a new container and passing the required arguments:
 
 ```{bash}
-docker run --volume opentargets-assoc-etl-vol:/data jackhaynes/opentargets-assoc-etl \
+docker run -it -v opentargets-assoc-etl-vol:/data jackhaynes/opentargets-assoc-etl \
     --ftp-server ftp.ebi.ac.uk \
     --assoc-dir pub/databases/opentargets/platform/21.11/output/etl/json/evidence/sourceId=eva/ \
     --disease-dir pub/databases/opentargets/platform/21.11/output/etl/json/diseases/ \
