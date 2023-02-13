@@ -11,7 +11,7 @@ parser.add_argument('-a', '--assoc-dir', required=True)
 parser.add_argument('-d', '--disease-dir', required=True)
 parser.add_argument('-t', '--target-dir', required=True)
 parser.add_argument('-o', '--output-dir', default='./data')
-parser.add_argument('-p', '--processes', default=1)
+parser.add_argument('-p', '--processes', default=1, type=int)
 
 args = parser.parse_args()
 
