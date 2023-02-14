@@ -34,6 +34,6 @@ class AssociationsDataSet:
         self.compute_score_metrics()
         self.join()
 
-    def save(self, filepath: str) -> None:
+    def save_output(self, filepath: str) -> None:
         with open(filepath, 'wb') as file:
             self.metrics.to_json(file, orient='records')

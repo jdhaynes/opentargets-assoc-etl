@@ -1,4 +1,5 @@
 import json
+
 import os
 from os.path import splitext
 
@@ -7,9 +8,18 @@ import pandas as pd
 
 class JSONFileDirectory:
     def __init__(self, dir: str) -> None:
+        """
+        Instantiates a new object representing a JSON file on the local filesystem.
+        :param dir:
+        """
         self.dir = dir
 
     def to_dataframe(self, columns: list[str]) -> pd.DataFrame:
+        """
+        Generates a DataFrame of data from the JSON file with the columns specified.
+        :param columns: A list of JSON field names to extract as DataFrame columns.
+        :return: A DataFrame representation of the JSON file.
+        """
         dataframes = []
 
         files = os.listdir(self.dir)

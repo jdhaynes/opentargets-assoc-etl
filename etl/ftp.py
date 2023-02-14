@@ -32,11 +32,13 @@ class FTPBatchDownloader:
     def __init__(self, server: str) -> None:
         self.server = server
 
-    def download_file(self, filepath: str, output_dir: str) -> None:
+    def download_file(self, server_dir: str, filepath: str, output_dir: str) -> None:
         ftp = FTPConnection(self.server)
-        ftp.download_file()
+        ftp.download_file(server_dir=server_dir,
+                          server_filename=filepath,
+                          output_dir=output_dir)
 
-    def download_dir(self, server_dir: str, output_dir: str) -> None:
+    def download_dir(self, server_dir: str, output_dir: str, processes: int) -> None:
         files = FTPConnection(self.server).list_dir(server_dir)
-        with Pool(files) as pool:
+        with Pool(processes) as pool:
             pool.starmap(self.download_file, [(server_dir, x, output_dir) for x in files])
