@@ -31,6 +31,7 @@ class AssociationsDataSet:
         :param target2: ID of target 2.
         :return: True if target pair has at least 2 shared diseases.
         """
+        # Get list of diseases with evidence for each targetId, find intersection and return true if count is >= 2.
         target1_diseases = self.true_assocs[self.true_assocs['targetId'] == target1]['diseaseId']
         target2_diseases = self.true_assocs[self.true_assocs['targetId'] == target2]['diseaseId']
         common_diseases = np.intersect1d(target1_diseases, target2_diseases)
@@ -42,6 +43,8 @@ class AssociationsDataSet:
         Counts the number of target pairs that share at least 2 diseases.
         """
         print(f'Computing target pair common diseases')
+        # NOTE: this is currently a naive algorithm and doesn't finish in an acceptable time given the high number
+        # of possible target-target combinations and requirement to compute intersection of diseaseIds for each.
 
         # Making a naive assumption that a "true" assoc must have a median score > 0. Some caveats to consider here.
         self.true_assocs = self.metrics[self.metrics['median'] > 0]
@@ -50,6 +53,8 @@ class AssociationsDataSet:
         target_ids = self.assoc_data['targetId'].unique()
         target_pairs = list(itertools.combinations(target_ids, r=2))
 
+        # For each target-target pair, calculate if there are at least two shared diseases with evidence. Multiprocessed
+        # for performance reasons.
         with Pool(self.processes) as pool:
             pair_has_common_diseases = pool.starmap(self.target_pair_has_common_diseases, target_pairs)
 
