@@ -49,9 +49,17 @@ class Pipeline:
         """
         Loads the downloaded data into memory for transformation.
         """
-        self.data['assoc'] = JSONFileDirectory(self.output_dirs['assoc']).to_dataframe(columns=['targetId', 'diseaseId', 'score'])
-        self.data['target'] = JSONFileDirectory(self.output_dirs['target']).to_dataframe(columns=['id', 'name'])
-        self.data['disease'] = JSONFileDirectory(self.output_dirs['disease']).to_dataframe(columns=['id', 'approvedSymbol'])
+        self.data['assoc'] = JSONFileDirectory(self.output_dirs['assoc']) \
+            .to_dataframe(columns=['targetId', 'diseaseId', 'score'],
+                          processes=self.processes)
+
+        self.data['target'] = JSONFileDirectory(self.output_dirs['target']) \
+            .to_dataframe(columns=['id', 'approvedSymbol'],
+                          processes=self.processes)
+
+        self.data['disease'] = JSONFileDirectory(self.output_dirs['disease']) \
+            .to_dataframe(columns=['id', 'name'],
+                          processes=self.processes)
 
         self.analysis = AssociationsDataSet(assoc_data=self.data['assoc'],
                                             target_data=self.data['target'],
@@ -64,4 +72,4 @@ class Pipeline:
         self.download_data()
         self.load_data()
         self.analysis.transform()
-        self.analysis.save_output()
+        self.analysis.save_output(filepath=os.path.join(self.output_root, 'output.json'))
