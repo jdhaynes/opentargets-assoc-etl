@@ -63,7 +63,8 @@ class Pipeline:
 
         self.analysis = AssociationsDataSet(assoc_data=self.data['assoc'],
                                             target_data=self.data['target'],
-                                            disease_data=self.data['disease'])
+                                            disease_data=self.data['disease'],
+                                            processes=self.processes)
 
     def run(self) -> None:
         """
@@ -72,4 +73,4 @@ class Pipeline:
         self.download_data()
         self.load_data()
         self.analysis.transform()
-        self.analysis.save_output(filepath=os.path.join(self.output_root, 'output.json'))
+        self.analysis.save(dir=self.output_root)
