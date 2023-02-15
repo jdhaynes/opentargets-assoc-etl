@@ -70,7 +70,7 @@ class Pipeline:
         """
         Runs the full pipeline.
         """
-        #self.download_data()
+        self.download_data()
         self.load_data()
 
         # Compute disease-target association score metrics and save.
