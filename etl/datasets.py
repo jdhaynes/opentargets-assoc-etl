@@ -81,7 +81,7 @@ class AssociationsDataSet:
         targets = self.target_data.set_index('id')
 
         self.assocs = self.assocs \
-            .reset_index(drop=True) \
+            .reset_index() \
             .merge(right=targets['approvedSymbol'],
                    left_on='targetId',
                    right_on='id') \

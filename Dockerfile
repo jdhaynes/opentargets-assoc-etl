@@ -6,4 +6,4 @@ COPY ./tests ./tests
 
 RUN python3 -m pip install -r ./requirements.txt
 
-CMD ["python3", "./etl/run.py"]
+ENTRYPOINT ["python3", "./etl/run.py"]

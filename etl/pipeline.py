@@ -33,7 +33,7 @@ class Pipeline:
         """
         Downloads the data from the FTP server onto the local filesystem.
         """
-        datasets = ['assoc', 'target', 'disease']
+        datasets = ['evidence', 'target', 'disease']
         for d in datasets:
             # Create the directory.
             target_dir = os.path.join(self.output_root, d)
@@ -70,7 +70,7 @@ class Pipeline:
         """
         Runs the full pipeline.
         """
-        self.download_data()
+        #self.download_data()
         self.load_data()
 
         # Compute disease-target association score metrics and save.
