@@ -114,7 +114,7 @@ pytest /tests
 ```
 
 ### Option 2: Docker Container
-Run pytest in the Docker container by overriding the default command:
+Run pytest in the Docker container by overriding the container entrypoint:
 ```{bash}
-docker run -it jackhaynes/opentargets-assoc-etl pytest /tests
+docker run -it --entrypoint pytest jackhaynes/opentargets-assoc-etl /tests 
 ```
