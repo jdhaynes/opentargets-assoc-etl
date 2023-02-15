@@ -5,7 +5,7 @@ from pipeline import Pipeline
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', '--ftp-server', required=True)
-    parser.add_argument('-a', '--assoc-dir', required=True)
+    parser.add_argument('-a', '--evidence-dir', required=True)
     parser.add_argument('-d', '--disease-dir', required=True)
     parser.add_argument('-t', '--target-dir', required=True)
     parser.add_argument('-o', '--output-dir', default='./data')
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     pipeline = Pipeline(server=args.ftp_server,
-                        assoc_dir=args.assoc_dir,
+                        evidence_dir=args.evidence_dir,
                         disease_dir=args.disease_dir,
                         target_dir=args.target_dir,
                         output_dir=args.output_dir,

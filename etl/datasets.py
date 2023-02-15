@@ -8,21 +8,21 @@ import pandas as pd
 
 
 class AssociationsDataSet:
-    def __init__(self, assoc_data: pd.DataFrame, target_data: pd.DataFrame,
+    def __init__(self, evidence_data: pd.DataFrame, target_data: pd.DataFrame,
                  disease_data: pd.DataFrame, processes) -> None:
         """
         Instantiates a new object representing an abstraction of the disease-target association dataset.
-        :param assoc_data: A DateFrame containing disease-target association data.
+        :param evidence_data: A DateFrame containing evidence data.
         :param target_data: A DateFrame containing disease data.
         :param disease_data: A DateFrame containing target  data.
         """
         self.processes = processes
-        self.assoc_data = assoc_data
+        self.evidence_data = evidence_data
         self.target_data = target_data
         self.disease_data = disease_data
-        self.metrics = None
+        self.assocs = None
         self.true_assocs = None
-        self.target_pairs = None
+        self.common_diseases = None
 
     def target_pair_has_common_diseases(self, target1: str, target2: str) -> int:
         """
@@ -47,10 +47,10 @@ class AssociationsDataSet:
         # of possible target-target combinations and requirement to compute intersection of diseaseIds for each.
 
         # Making a naive assumption that a "true" assoc must have a median score > 0. Some caveats to consider here.
-        self.true_assocs = self.metrics[self.metrics['median'] > 0]
+        self.true_assocs = self.assocs[self.assocs['median'] > 0]
 
         # Generate list of each possible target-target pair combination
-        target_ids = self.assoc_data['targetId'].unique()
+        target_ids = self.evidence_data['targetId'].unique()
         target_pairs = list(itertools.combinations(target_ids, r=2))
 
         # For each target-target pair, calculate if there are at least two shared diseases with evidence. Multiprocessed
@@ -58,7 +58,7 @@ class AssociationsDataSet:
         with Pool(self.processes) as pool:
             pair_has_common_diseases = pool.starmap(self.target_pair_has_common_diseases, target_pairs)
 
-        self.target_pairs = sum(pair_has_common_diseases)
+        self.common_diseases = sum(pair_has_common_diseases)
 
     def compute_score_metrics(self):
         """
@@ -66,7 +66,7 @@ class AssociationsDataSet:
         """
         print(f'Computing score metrics')
 
-        self.metrics = self.assoc_data \
+        self.assocs = self.evidence_data \
             .groupby(['targetId', 'diseaseId'])['score'] \
             .agg(median=lambda x: x.median(),
                  top3=lambda x: list(x.sort_values(ascending=False).head(3)))
@@ -80,7 +80,7 @@ class AssociationsDataSet:
         diseases = self.disease_data.set_index('id')
         targets = self.target_data.set_index('id')
 
-        self.metrics = self.metrics \
+        self.assocs = self.assocs \
             .reset_index(drop=True) \
             .merge(right=targets['approvedSymbol'],
                    left_on='targetId',
@@ -97,13 +97,18 @@ class AssociationsDataSet:
         self.join()
         self.count_targets_common_disease()
 
-    def save(self, dir: str) -> None:
+    def save_assocs(self, dir: str) -> None:
         """
-        Writes the output data to a directory on the local filesystem.
-        :param filepath: Full filepath on the local filesystem to write to.
+        Writes the  association data to a JSON file on the local filesystem.
+        :param dir: Directory on the local filesystem to write to.
         """
         with open(os.path.join(dir, 'output.json'), 'wb') as file:
-            self.metrics.to_json(file, orient='records')
+            self.assocs.to_json(file, orient='records')
 
+    def save_common_diseases(self, dir: str) -> None:
+        """
+        Writes the number of target-target pairs with >=2 common diseases to a TXT file on the local filesystem.
+        :param dir: Directory on the local filesystem to write to.
+        """
         with open(os.path.join(dir, 'output2.txt'), 'wb') as file:
-            file.write(self.target_pairs)
+            file.write(self.common_diseases)

@@ -6,12 +6,12 @@ from json_data import JSONFileDirectory
 
 
 class Pipeline:
-    def __init__(self, server: str, assoc_dir: str, target_dir: str,
+    def __init__(self, server: str, evidence_dir: str, target_dir: str,
                  disease_dir: str, output_dir: str, processes: int) -> None:
         """
         Creates a new pipeline instance.
         :param server: The FTP server address containing the data.
-        :param assoc_dir: Directory on the FTP server containing the disease-target association data.
+        :param evidence_dir: Directory on the FTP server containing the evidence data.
         :param target_dir: Directory on the FTP server containing the target data.
         :param disease_dir: Directory on the FTP server containing the disease data.
         :param output_dir: Directory on the local filesystem to write pipeline output data to.
@@ -21,7 +21,7 @@ class Pipeline:
         self.processes = processes
 
         self.output_root = output_dir
-        self.server_dirs = {'assoc': assoc_dir,
+        self.server_dirs = {'evidence': evidence_dir,
                      'target': target_dir,
                      'disease': disease_dir}
         self.output_dirs = {x: os.path.join(self.output_root, x) for x in self.server_dirs}
@@ -49,7 +49,7 @@ class Pipeline:
         """
         Loads the downloaded data into memory for transformation.
         """
-        self.data['assoc'] = JSONFileDirectory(self.output_dirs['assoc']) \
+        self.data['evidence'] = JSONFileDirectory(self.output_dirs['evidence']) \
             .to_dataframe(columns=['targetId', 'diseaseId', 'score'],
                           processes=self.processes)
 
@@ -61,7 +61,7 @@ class Pipeline:
             .to_dataframe(columns=['id', 'name'],
                           processes=self.processes)
 
-        self.analysis = AssociationsDataSet(assoc_data=self.data['assoc'],
+        self.analysis = AssociationsDataSet(evidence_data=self.data['evidence'],
                                             target_data=self.data['target'],
                                             disease_data=self.data['disease'],
                                             processes=self.processes)

@@ -15,7 +15,7 @@ class TestDatasets:
                                       'name': ['diseaseName1', 'diseaseName2']})
 
     def test_score_metrics_has_correct_median(self):
-        dataset = AssociationsDataSet(assoc_data=self.mock_assoc,
+        dataset = AssociationsDataSet(evidence_data=self.mock_assoc,
                                       target_data=self.mock_target,
                                       disease_data=self.mock_disease,
                                       processes=2)
@@ -27,10 +27,10 @@ class TestDatasets:
                                       'median': [6.5, 15],
                                       'top3': [[11, 7, 6], [15]]}).set_index(['targetId', 'diseaseId'])
 
-        pd.testing.assert_series_equal(left=dataset.metrics['median'], right=expected['median'])
+        pd.testing.assert_series_equal(left=dataset.assocs['median'], right=expected['median'])
 
     def test_score_metrics_has_correct_top3(self):
-        dataset = AssociationsDataSet(assoc_data=self.mock_assoc,
+        dataset = AssociationsDataSet(evidence_data=self.mock_assoc,
                                       target_data=self.mock_target,
                                       disease_data=self.mock_disease,
                                       processes=2)
@@ -42,15 +42,15 @@ class TestDatasets:
                                       'median': [6.5, 15],
                                       'top3': [[11, 7, 6], [15]]}).set_index(['targetId', 'diseaseId'])
 
-        pd.testing.assert_series_equal(left=dataset.metrics['top3'], right=expected['top3'])
+        pd.testing.assert_series_equal(left=dataset.assocs['top3'], right=expected['top3'])
 
     def test_transform_joins_correct_data(self):
-        dataset = AssociationsDataSet(assoc_data=self.mock_assoc,
+        dataset = AssociationsDataSet(evidence_data=self.mock_assoc,
                                       target_data=self.mock_target,
                                       disease_data=self.mock_disease,
                                       processes=2)
 
-        dataset.metrics = dataset.assoc_data
+        dataset.assocs = dataset.evidence_data
         dataset.join()
 
         expected = pd.DataFrame(data={'targetId': ['target1', 'target1', 'target1', 'target1', 'target2'],
@@ -61,5 +61,5 @@ class TestDatasets:
                                       'approvedSymbol': ['symbol1', 'symbol1', 'symbol1', 'symbol1', 'symbol2']
                                       })
 
-        pd.testing.assert_frame_equal(left=dataset.metrics[['name', 'approvedSymbol']],
-                                       right=expected[['name', 'approvedSymbol']])
+        pd.testing.assert_frame_equal(left=dataset.assocs[['name', 'approvedSymbol']],
+                                      right=expected[['name', 'approvedSymbol']])
