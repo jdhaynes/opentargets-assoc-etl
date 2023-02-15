@@ -80,7 +80,8 @@ class AssociationsDataSet:
         diseases = self.disease_data.set_index('id')
         targets = self.target_data.set_index('id')
 
-        self.metrics = self.metrics.reset_index() \
+        self.metrics = self.metrics \
+            .reset_index(drop=True) \
             .merge(right=targets['approvedSymbol'],
                    left_on='targetId',
                    right_on='id') \
