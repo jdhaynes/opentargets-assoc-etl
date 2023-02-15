@@ -72,5 +72,15 @@ class Pipeline:
         """
         self.download_data()
         self.load_data()
-        self.analysis.transform()
-        self.analysis.save(dir=self.output_root)
+
+        # Compute disease-target association score metrics and save.
+        self.analysis.compute_score_metrics()
+        self.analysis.join()
+        self.analysis.save_assocs(dir=self.output_root)
+
+        # Compute number of target-target pairs that have >=2 common diseases.
+        # Note: the current algorithm is naive and doesn't finish in an acceptable time.
+        self.analysis.count_targets_common_disease()
+        self.analysis.save_common_diseases(dir=self.output_root)
+
+

@@ -89,14 +89,6 @@ class AssociationsDataSet:
                    left_on='diseaseId',
                    right_on='id')
 
-    def transform(self) -> None:
-        """
-        Performs all transformation steps on the dataset.
-        """
-        self.compute_score_metrics()
-        self.join()
-        self.count_targets_common_disease()
-
     def save_assocs(self, dir: str) -> None:
         """
         Writes the  association data to a JSON file on the local filesystem.

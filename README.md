@@ -2,10 +2,7 @@
 A simple extract-transform-load (ETL) pipeline to compute disease-target association metrics from publicly available EMBL-EBI Open Targets data.
 
 ## Description
-This pipeline downloads disease-target association data, disease metadata and target metadata from the EMBL-EBI Open Targets public data hosted on the EMBL-EBI public FTP server in partitioned JSON. Downloads are performed in parallel using multiprocessing for enhanced performance. The data is then loaded into memory and manipulated as a DataFrame (`pandas`) to compute the median and top 3 scores for each disease-target association. The resulting data is saved as a JSON file to the data output directory.
-
-For space, only the output files are committed to this repo.
-
+This pipeline downloads disease-target association evidence data, disease metadata and target metadata from the EMBL-EBI Open Targets public data hosted on the EMBL-EBI public FTP server in partitioned JSON. Downloads are performed in parallel using multiprocessing for enhanced performance. The data is then loaded into memory and manipulated as a DataFrame (`pandas`) to compute the median and top 3 scores for each disease-target association. The resulting data is saved as a JSON file to the data output directory.
 
 ## Installation
 ### Option 1: Python Virtual Environment
@@ -107,3 +104,17 @@ Contains a list of disease-target associations and their associated score metric
 
 #### `output2.txt`
 Contains the number of target-target pairs sharing at least two common disease associations.
+
+### Executing Tests
+### Option 1: Python Virtual Environment
+Activate the virtual environment and use pytest to run tests:
+```{bash}
+source env/bin/activate
+pytest
+```
+
+### Option 2: Docker Container
+Run pytest in the Docker container by overriding the default command:
+```{bash}
+docker run -it -v opentargets-assoc-etl-vol:/data jackhaynes/opentargets-assoc-etl pytest
+```
